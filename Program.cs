@@ -1,12 +1,22 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TareasMVC;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//aplicacndo filtros de autenticacion
+var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
+    .RequireAuthenticatedUser()
+    .Build();
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(option =>
+{
+    option.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
+});
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer("name=DefaultConnection"));
 
