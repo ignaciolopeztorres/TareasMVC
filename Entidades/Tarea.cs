@@ -16,5 +16,7 @@ namespace TareasMVC.Entidades
 
         //configura que una tarea tenga muchos pasos
         public List<Paso> Pasos { get; set; }
+
+        public List<ArchivoAdjunto> ArchivoAdjunto { get; set; }
     }
 }
