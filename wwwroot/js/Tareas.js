@@ -25,6 +25,7 @@ async function manejarFocusoutTituloTarea(tarea) {
         tarea.id(json.id)
     } else {
         //mensaje de Error
+        manejarErrorApi(respuesta);
     }
 }
 
@@ -51,5 +52,4 @@ async function obtenerTareas() {
     });
 
     tareaListadoViewModel.cargando(false);
-
 }

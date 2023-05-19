@@ -25,7 +25,7 @@ namespace TareasMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<List<TareaDTO>> Get()
+        public async Task<ActionResult<List<TareaDTO>>> Get()
         {
             var usuarioId = servicioUsuarios.ObtenerUsuarioId();
             var tarea = await context.Tareas
