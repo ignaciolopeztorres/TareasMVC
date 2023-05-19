@@ -68,5 +68,34 @@ namespace TareasMVC.Controllers
             await context.SaveChangesAsync();
             return tarea;
         }
+
+        [HttpPost("ordenar")]
+        public async Task<IActionResult> Ordenar([FromBody] int[] ids)
+        {
+            var usuariosId = servicioUsuarios.ObtenerUsuarioId();
+
+            var tareas = await context.Tareas
+                .Where(t => t.UsuarioCreacionId == usuariosId)
+                .ToListAsync();
+
+            var tareasId = tareas.Select(t => t.Id);
+            var idsTareasNoPretenecenAlUsuario = ids.Except(tareasId).ToList();
+
+            if (idsTareasNoPretenecenAlUsuario.Any())
+            {
+                return Forbid();
+            }
+
+            var tareasDiccionario = tareas.ToDictionary(x => x.Id);
+
+            for (int i = 0; i < ids.Length; i++)
+            {
+                var id = ids[i];
+                var tarea = tareasDiccionario[id];
+                tarea.Orden = i + 1;
+            }
+            await context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
