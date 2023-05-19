@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace TareasMVC.Entidades
 {
@@ -14,6 +15,8 @@ namespace TareasMVC.Entidades
         public int Orden { get; set; }
         public DateTime FechaCreacion { get; set; }
 
+        public string UsuarioCreacionId { get; set; }
+        public IdentityUser UsuarioCreacion { get; set; }
         //configura que una tarea tenga muchos pasos
         public List<Paso> Pasos { get; set; }
 
