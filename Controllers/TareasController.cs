@@ -24,6 +24,7 @@ namespace TareasMVC.Controllers
             var usuarioId = servicioUsuarios.ObtenerUsuarioId();
             return await context.Tareas
                 .Where(t => t.UsuarioCreacionId == usuarioId)
+                .OrderBy(t => t.Orden)
                 .ToListAsync();
         }
 
