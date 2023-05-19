@@ -36,6 +36,9 @@
 
     <script src="~/js/Tareas.js" asp-append-version="true"></script>
     <script>
+
+        const urlTareas = "/api/tareas";
+
         function tareaListadoViewModelFn() {
             var self = this;
             self.tareas = ko.observableArray([]);

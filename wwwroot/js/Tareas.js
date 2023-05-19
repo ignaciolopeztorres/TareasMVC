@@ -3,12 +3,27 @@
     $("[name=titulo-tarea]").last().focus();
 }
 
-function manejarFocusoutTituloTarea(tarea) {
+async function manejarFocusoutTituloTarea(tarea) {
     const titulo = tarea.titulo();
     if (!titulo) {
         tareaListadoViewModel.tareas.pop();
         return;
     }
 
-    tarea.id(1);
+    const data = JSON.stringify(titulo);
+
+    const respueta = await fetch(urlTareas, {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (respueta.ok) {
+        const json = await respueta.json();
+        tarea.id(json.id)
+    } else {
+        //mensaje de Error
+    }
 }
