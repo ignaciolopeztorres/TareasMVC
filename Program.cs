@@ -21,7 +21,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer("name=DefaultConnection"));
 
 //configurando identity en la aplicacion
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication().AddMicrosoftAccount(opciones =>
+{
+    opciones.ClientId = builder.Configuration["MicrosoftClientId"];
+    opciones.ClientSecret = builder.Configuration["MicrosoftSecretId"];
+});
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(option =>
 {
     option.SignIn.RequireConfirmedAccount = false;
