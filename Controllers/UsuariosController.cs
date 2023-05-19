@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Abstractions;
 using System.Security.Claims;
 using TareasMVC.Models;
+using TareasMVC.Servicios;
 
 namespace TareasMVC.Controllers
 {
@@ -184,6 +186,34 @@ namespace TareasMVC.Controllers
             model.Usuarios = usuarios;
             model.Mensaje = mensaje;
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HacerAdmin(string email)
+        {
+            var usuario = await context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            if (usuario is null)
+            {
+                return NotFound();
+            }
+            await userManager.AddToRoleAsync(usuario, Constantes.RolAdmin);
+
+            return RedirectToAction("Listado",
+                routeValues: new { mensaje = "Rol asignado correctamente a " + email });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoverAdmin(string email)
+        {
+            var usuario = await context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            if (usuario is null)
+            {
+                return NotFound();
+            }
+            await userManager.RemoveFromRoleAsync(usuario, Constantes.RolAdmin);
+
+            return RedirectToAction("Listado",
+                routeValues: new { mensaje = "Rol removido correctamente a " + email });
         }
     }
 }
