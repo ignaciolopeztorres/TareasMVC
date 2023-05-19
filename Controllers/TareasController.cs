@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TareasMVC.Entidades;
+using TareasMVC.Models;
 using TareasMVC.Servicios;
 
 namespace TareasMVC.Controllers
@@ -19,18 +20,19 @@ namespace TareasMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<List<TareaDTO>> Get()
         {
             var usuarioId = servicioUsuarios.ObtenerUsuarioId();
             var tarea = await context.Tareas
                 .Where(t => t.UsuarioCreacionId == usuarioId)
                 .OrderBy(t => t.Orden)
-                .Select(t => new { 
-                    t.Id,
-                    t.Titulo
+                .Select(t => new TareaDTO
+                {
+                    Id = t.Id,
+                    Titulo = t.Titulo
                 })
                 .ToListAsync();
-            return Ok(tarea);
+            return tarea;
         }
 
         [HttpPost]
