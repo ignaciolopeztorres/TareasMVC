@@ -40,14 +40,18 @@ builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.Ap
     opciones.AccessDeniedPath = "/Usuarios/login";
 });
 
-builder.Services.AddLocalization();
+builder.Services.AddLocalization(opciones =>
+{
+    opciones.ResourcesPath = "Recursos";
+});
 
 var app = builder.Build();
 
-var culturasUISoportadas = new[] { "es-MX", "en-US" };
+var culturasUISoportadas = new[] { "es", "en" };
 
-app.UseRequestLocalization( opciones => { 
-    opciones.DefaultRequestCulture = new RequestCulture("es-MX");
+app.UseRequestLocalization(opciones =>
+{
+    opciones.DefaultRequestCulture = new RequestCulture("es");
     opciones.SupportedUICultures = culturasUISoportadas
         .Select(cultura => new CultureInfo(cultura))
         .ToList();
