@@ -91,7 +91,7 @@ async function manejarClickTarea(tarea) {
     const respuesta = await fetch(`${urlTareas}/${tarea.id()}`, {
         method: 'GET',
         headers: {
-            'Content-Type' : 'application/json'
+            'Content-Type': 'application/json'
         }
     });
     if (!respuesta.ok) {
@@ -99,11 +99,12 @@ async function manejarClickTarea(tarea) {
         return;
     }
     const json = await respuesta.json();
-    console.log(json);
 
     tareaEditarVM.id = json.id;
     tareaEditarVM.titulo(json.titulo);
     tareaEditarVM.descripcion(json.descripcion);
+
+    modalEditarTareaBootstrap.show();
 }
 
 $(function () {
