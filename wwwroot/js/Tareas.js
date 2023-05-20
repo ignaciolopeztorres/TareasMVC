@@ -103,6 +103,13 @@ async function manejarClickTarea(tarea) {
     tareaEditarVM.id = json.id;
     tareaEditarVM.titulo(json.titulo);
     tareaEditarVM.descripcion(json.descripcion);
+    tareaEditarVM.pasos([]);
+
+    json.pasos.forEach(paso => {
+        tareaEditarVM.pasos.push(
+            new pasoViewModel({...paso, modoEdicion: false})
+        );
+    });
 
     modalEditarTareaBootstrap.show();
 }
@@ -160,7 +167,7 @@ async function borrarTarea(tarea) {
     const respuesta = await fetch(`${urlTareas}/${idTarea}`, {
         method: 'DELETE',
         headers: {
-            'Content-Type':'applications/json'
+            'Content-Type':'application/json'
         }
     });
     if (respuesta.ok) {

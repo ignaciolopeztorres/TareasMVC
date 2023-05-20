@@ -11,23 +11,23 @@ namespace TareasMVC.Controllers
     [Route("api/pasos")]
     public class PasosController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext context;
         private readonly IServicioUsuarios servicioUsuarios;
 
         public PasosController(ApplicationDbContext context,
             IServicioUsuarios servicioUsuarios)
         {
-            _context = context;
+            this.context = context;
             this.servicioUsuarios = servicioUsuarios;
         }
 
         // POST: Pasos
-        [HttpPost("{tareaId: int}")]
+        [HttpPost("{tareaId:int}")]
         public async Task<ActionResult<Paso>> Post(int tareaId, [FromBody] PasoCrearDTO pasoCrearDTO)
         {
             var usuarioId = servicioUsuarios.ObtenerUsuarioId();
 
-            var tarea = await _context.Tareas.FirstOrDefaultAsync(t => t.Id == tareaId);
+            var tarea = await context.Tareas.FirstOrDefaultAsync(t => t.Id == tareaId);
 
             if (tarea is null)
             {
@@ -39,11 +39,11 @@ namespace TareasMVC.Controllers
                 return Forbid();
             }
 
-            var existenPasos = await _context.Pasos.AnyAsync(p => p.TareaId == tareaId);
+            var existenPasos = await context.Pasos.AnyAsync(p => p.TareaId == tareaId);
             var ordenMayor = 0;
             if (existenPasos)
             {
-                ordenMayor = await _context.Pasos
+                ordenMayor = await context.Pasos
                                         .Where(p => p.TareaId == tareaId)
                                         .Select(p => p.Orden)
                                         .MaxAsync();
@@ -54,8 +54,8 @@ namespace TareasMVC.Controllers
             paso.Descripcion = pasoCrearDTO.descripcion;
             paso.Realizado = pasoCrearDTO.Realizado;
 
-            _context.Add(paso);
-            await _context.SaveChangesAsync();
+            context.Add(paso);
+            await context.SaveChangesAsync();
             return paso;
         }
     }
