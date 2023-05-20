@@ -13,6 +13,8 @@ function manejarClickCancelarPaso(paso) {
     if (paso.esNuevo()) {
         tareaEditarVM.pasos.pop();
     } else {
+        paso.modoEdicion(false);
+        paso.descripcion(paso.descripcionAnterior);
     }
 }
 
@@ -22,9 +24,22 @@ async function manejarClickSalvarPaso(paso) {
     const idTarea = tareaEditarVM.id;
     const data = obtenerCuerpoPeticionPaso(paso)
 
+    const descripcion = paso.descripcion();
+
+    if (!descripcion) {
+        paso.descripcion(paso.descripcionAnterior);
+
+        if (esNuevo) {
+            tareaEditarVM.pasos.pop();
+        }
+        return;
+    }
+
     if (esNuevo) {
-        await insertarPaso(paso, data, idTarea)
-    } else { }
+        await insertarPaso(paso, data, idTarea);
+    } else {
+        actualizarPaso(data, paso.id());
+    }
 }
 
 async function insertarPaso(paso, data, idTarea) {
@@ -32,7 +47,7 @@ async function insertarPaso(paso, data, idTarea) {
         method: 'POST',
         body: data,
         headers: {
-            'Content-Type':'application/json'
+            'Content-Type': 'application/json'
         }
     });
 
@@ -49,4 +64,24 @@ function obtenerCuerpoPeticionPaso(paso) {
         descripcion: paso.descripcion(),
         realizado: paso.realizado()
     });
+}
+
+function manejarClickDescripcionPaso(paso) {
+    paso.modoEdicion(true);
+    paso.descripcionAnterior = paso.descripcion();
+    $("[name=txtPasoDescripcion]:visible").focus();
+}
+
+async function actualizarPaso(data, id) {
+    const respuesta = await fetch(`${urlPasos}/${id}`, {
+        method: 'PUT',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!respuesta.ok) {
+        manejarErrorApi(respuesta);
+    }
 }
