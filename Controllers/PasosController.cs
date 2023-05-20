@@ -85,5 +85,32 @@ namespace TareasMVC.Controllers
             await context.SaveChangesAsync();
             return Ok();
         }
+
+        [HttpDelete("{id}")]
+        // GET: Pasos/Delete/5
+        public async Task<ActionResult> Delete(Guid id)
+        {
+
+            var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+
+            var paso = await context.Pasos
+                .Include(p => p.Tarea)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (paso == null)
+            {
+                return NotFound();
+            }
+
+            if (paso.Tarea.UsuarioCreacionId != usuarioId)
+            {
+                return Forbid();
+            }
+
+            context.Remove(paso);           
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+
     }
 }
