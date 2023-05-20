@@ -36,13 +36,15 @@ namespace TareasMVC.Controllers
             return tarea;
         }
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Tarea>> Get(int id) {
+        public async Task<ActionResult<Tarea>> Get(int id)
+        {
             var usuarioId = servicioUsuarios.ObtenerUsuarioId();
 
             var tarea = await context.Tareas
                 .FirstOrDefaultAsync(t => t.Id == id && t.UsuarioCreacionId == usuarioId);
 
-            if (tarea is null) {
+            if (tarea is null)
+            {
                 return NotFound();
             }
             return tarea;
@@ -79,6 +81,22 @@ namespace TareasMVC.Controllers
             //guarda en la base de datos
             await context.SaveChangesAsync();
             return tarea;
+        }
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> EditarTarea(int id, [FromBody] TareaEditarDTO tareaEditarDTO)
+        {
+            var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+
+            var tarea = await context.Tareas.FirstOrDefaultAsync(t => t.Id == id && t.UsuarioCreacionId == usuarioId);
+
+            if (tarea is null)
+            {
+                return NotFound();
+            }
+            tarea.Titulo = tareaEditarDTO.Titulo;
+            tarea.Descripcion = tareaEditarDTO.Descripcion;
+            await context.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpPost("ordenar")]

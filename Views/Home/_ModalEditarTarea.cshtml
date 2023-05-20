@@ -11,12 +11,15 @@
                     <div class="col-lg-9">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="txtTituloCrearTarea" 
-                            placeholder="tirulo" data-bind="value: titulo"/>
+                                placeholder="titulo" 
+                                autocomplete="off"
+                                data-bind="value: titulo, event: {change: manejarCambioEditarTarea }"/>
                             <label for="txtTituloCrearTarea" class="form-label">Titulo de la tarea</label>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Descripcion</label>
-                            <textarea class="form-control" rows="4" data-bind="value: descripcion">
+                            <textarea class="form-control" rows="4"
+                                data-bind="value: descripcion, event: {change: manejarCambioEditarTarea }">
                             </textarea>
                         </div>
                     </div>
