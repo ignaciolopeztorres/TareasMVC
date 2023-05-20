@@ -18,3 +18,22 @@ function mostrarMensajeError(mensaje) {
         text: mensaje
     })
 }
+
+function confirmarAccion({ callbackAceptar, callbackCancelar, titulo }) {
+    Swal.fire({
+        title: titulo || '¿Realmente desea hacer esto?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'si',
+        focusConfirm: true
+    }).then((resultado) => {
+        if (resultado.isConfirmed) {
+            callbackAceptar();
+        } else if (callbackCancelar) {
+            //el usuario presono el boton cancelar
+            callbackCancelar();
+        }
+    });
+}

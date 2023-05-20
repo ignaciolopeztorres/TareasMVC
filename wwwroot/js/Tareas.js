@@ -140,6 +140,40 @@ async function editarTareaCompleta(tarea) {
     }
 }
 
+function intentarBorraTarea(tarea) {
+    modalEditarTareaBootstrap.hide();
+
+    confirmarAccion({
+        callbackAceptar: () => {
+            borrarTarea(tarea);
+        },
+        callbackCancelar: () => {
+            modalEditarTareaBootstrap.show();
+        },
+        titulo: `¿Desea Borrar la tarea ${tarea.titulo()}`
+    })
+}
+
+async function borrarTarea(tarea) {
+    const idTarea = tarea.id;
+
+    const respuesta = await fetch(`${urlTareas}/${idTarea}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type':'applications/json'
+        }
+    });
+    if (respuesta.ok) {
+        const indice = obtenerIndiceTareaEnEdicion();
+        tareaListadoViewModel.tareas.splice(indice, 1);
+    }
+}
+
+
+function obtenerIndiceTareaEnEdicion() {
+    return tareaListadoViewModel.tareas().findIndex(t => t.id() == tareaEditarVM.id);
+}
+
 $(function () {
     $("#reordenable").sortable({
         axis: 'y',

@@ -35,6 +35,7 @@ namespace TareasMVC.Controllers
                 .ToListAsync();
             return tarea;
         }
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Tarea>> Get(int id)
         {
@@ -82,6 +83,7 @@ namespace TareasMVC.Controllers
             await context.SaveChangesAsync();
             return tarea;
         }
+
         [HttpPut("{id:int}")]
         public async Task<IActionResult> EditarTarea(int id, [FromBody] TareaEditarDTO tareaEditarDTO)
         {
@@ -96,6 +98,24 @@ namespace TareasMVC.Controllers
             tarea.Titulo = tareaEditarDTO.Titulo;
             tarea.Descripcion = tareaEditarDTO.Descripcion;
             await context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+
+            var tarea = await context.Tareas.FirstOrDefaultAsync(t => t.Id == id && t.UsuarioCreacionId == usuarioId);
+
+            if (tarea is null)
+            {
+                return NotFound();
+            }
+
+            context.Remove(tarea);
+            await context.SaveChangesAsync();
+
             return Ok();
         }
 
