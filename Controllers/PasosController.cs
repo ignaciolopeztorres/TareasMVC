@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient.DataClassification;
 using Microsoft.EntityFrameworkCore;
 using TareasMVC;
 using TareasMVC.Entidades;
+using TareasMVC.Migrations;
 using TareasMVC.Models;
 using TareasMVC.Servicios;
 
@@ -108,6 +110,43 @@ namespace TareasMVC.Controllers
             }
 
             context.Remove(paso);           
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost("ordenar/{tareaId:int}")]
+        public async Task<IActionResult> Ordenar(int tareaId, [FromBody] Guid[] ids)
+        {
+            var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+
+            var tarea = await context.Tareas.FirstOrDefaultAsync(t => t.Id == tareaId &&
+            t.UsuarioCreacionId == usuarioId);
+
+            if (tarea is null)
+            {
+                return NotFound();
+            }
+
+            var pasos = await context.Pasos.Where(x => x.TareaId == tareaId).ToListAsync();
+
+            var pasosIds = pasos.Select(x => x.Id);
+
+            var idsPasosNoPertenecenALaTarea = ids.Except(pasosIds).ToList();
+
+            if (idsPasosNoPertenecenALaTarea.Any())
+            {
+                return BadRequest("No todos los pasos están presentes");
+            }
+
+            var pasosDiccionario = pasos.ToDictionary(p => p.Id);
+
+            for (int i = 0; i < ids.Length; i++)
+            {
+                var pasoId = ids[i];
+                var paso = pasosDiccionario[pasoId];
+                paso.Orden = i + 1;
+            }
+
             await context.SaveChangesAsync();
             return Ok();
         }
