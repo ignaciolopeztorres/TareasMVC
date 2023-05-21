@@ -56,6 +56,7 @@ builder.Services.AddLocalization(opciones =>
 builder.Services.AddTransient<IServicioUsuarios, ServicioUsuarios>();
 //configuracion de AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosAzure>();
 
 var app = builder.Build();
 
